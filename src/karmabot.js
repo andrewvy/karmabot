@@ -139,8 +139,6 @@ Karmabot.prototype.routeMessage = function(dmChannel, user, message, is_dm) {
 	}
 }
 
-Karmabot.prototype
-
 Karmabot.prototype.setNextUserDMHandler = function(user, cb) {
 	// Provides a callback on the next user's DM
 	// for simple context aware applications
