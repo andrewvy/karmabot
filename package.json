@@ -1,0 +1,30 @@
+{
+  "name": "karmabot",
+  "version": "1.0.0",
+  "description": "Make the Slack experience positive and give kudos to those that do.",
+  "main": "index.js",
+  "dependencies": {
+	"lodash": "^3.10.0",
+    "slack-client": "",
+    "q": "^1.4.1",
+    "mongoose": ""
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andrewvy/karmabot.git"
+  },
+  "keywords": [
+    "karma",
+    "bot",
+    "slack"
+  ],
+  "author": "Andrew Vy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/andrewvy/karmabot/issues"
+  },
+  "homepage": "https://github.com/andrewvy/karmabot#readme"
+}
