@@ -11,17 +11,16 @@ var Commands = require("./commands");
 
 var Karmabot = function() {
 	var _this = this;
+	this.initialize();
 }
 
-Karmabot.prototype.initialize = function(config, configPath) {
-	if (!config.slack_token) {
-		return console.error("No slack_token specified in options.");
+Karmabot.prototype.initialize = function() {
+	if (!process.env.SLACK_TOKEN) {
+		return console.error("No SLACK_TOKEN found.");
 	}
 
-	this.config = config;
-	this.mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || config.database || "mongodb://localhost/karmabot";
-	this.slack_token = config.slack_token;
-	this.slack_group = config.slack_group;
+	this.mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || process.env.DATABASE || "mongodb://localhost/karmabot";
+	this.slack_token = process.env.SLACK_TOKEN;
 
 	this._nextUserDMHandlers = []
 
@@ -103,12 +102,14 @@ Karmabot.prototype.handleMessage = function(message) {
 		if (dmChannel.is_im) {
 			this.routeMessage(dmChannel, user, message.text, true);
 		} else {
-			this.routeMEssage(dmChannel, user, message.text);
+			this.routeMessage(dmChannel, user, message.text);
 		}
 	}
 }
 
 Karmabot.prototype.routeMessage = function(dmChannel, user, message, is_dm) {
+	var _this = this;
+
 	// Checks if there's a handler for this user
 	// If there's no current handler, pass it off to the right command handler
 
@@ -117,15 +118,28 @@ Karmabot.prototype.routeMessage = function(dmChannel, user, message, is_dm) {
 	if (handler) {
 		handler(dmChannel, user, message);
 	} else {
-		var triggerWord = message.split(" ")[0].toLowerCase();
+		// Match only those messages that begin with a mention
 
-		if (this.commands[triggerWord]) {
-			this.commands[triggerWord](dmChannel, user, message);
-		} else {
-			this.commands.default(dmChannel, user, message);
+		var re = /\<@(.*?)\>/g;
+		var match = re.exec(message);
+		if (match[1]) {
+			var text = message.replace(match[0], "").trim();
+			var to_user = this.slack.getUserByID(match[1]);
+
+			if (to_user) {
+				return this.slack.openDM(to_user.id, function(payload) {
+					var to_channel = _this.slack.getDMByID(payload.channel.id);
+
+					_this.commands.handleMention(dmChannel, to_channel, user, to_user, text, is_dm);
+				});
+			}
 		}
+
+		return this.commands.default(dmChannel, user, message, is_dm);
 	}
 }
+
+Karmabot.prototype
 
 Karmabot.prototype.setNextUserDMHandler = function(user, cb) {
 	// Provides a callback on the next user's DM
