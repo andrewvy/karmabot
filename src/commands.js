@@ -23,7 +23,7 @@ Commands.prototype.compliment = function(from_channel, to_channel, from_user, to
 
 	var formatted_message = "Surprise compliment! Someone said: " + message;
 //	var reply_message = "You can reply to your anonmyous complimenter with a single message right after this one. :)"
-	var reply_message = "Want to anonymously compliment someone else? Just DM me with a name and your message!"
+	var reply_message = "I am a work-in-progress bot. Want to anonymously compliment someone else? Just DM me with a name and your message!"
 	to_channel.send(formatted_message);
 	to_channel.send(reply_message);
 }

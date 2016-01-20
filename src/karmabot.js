@@ -173,9 +173,9 @@ Karmabot.prototype.checkUserHandlerExists = function(user, removeOnFind) {
 }
 
 Karmabot.prototype.getUsers = function(channel) {
-	// Returns array of members of a channel
-
 	var _this = this;
+
+	// Returns array of members of a channel
 
 	var members = channel.members.map(function(user_id) {
 		return _this.slack.getUserByID(user_id);
